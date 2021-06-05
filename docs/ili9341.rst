@@ -1,0 +1,12 @@
+ILI9341 module
+==============
+
+The ILI9341 driver provides low-level functions for connecting to the screen, like
+
+- Setting the background brightness
+- Initializing and resetting the screen
+- Changing the screen orientation
+- Sending and receiving data to/from the screen
+
+
+.. doxygenclass:: ili9341

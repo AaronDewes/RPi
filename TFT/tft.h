@@ -27,7 +27,7 @@ public:
 	inline class tfthw& operator++(int x);
 	inline class tfthw& operator--(int x);
 	inline class tfthw& operator*=(uint8_t z);
-	inline class tfthw& operator/=(uint8_t o);
+	inline class tfthw& operator/=(Orientation o);
 	inline class tfthw& operator^=(uint16_t l);
 
 	inline void setX(uint16_t n) {x = n;}
@@ -39,7 +39,7 @@ public:
 	inline void setBackground(uint16_t c) {bgc = c;}
 	inline uint8_t getForeground(void) {return fgc;}
 	inline uint8_t getBackground(void) {return bgc;}
-	inline void setOrient(uint8_t o);
+	inline void setOrient(Orientation o);
 	inline uint8_t getOrient(void) {return orient;}
 	inline void setBGLight(bool e) {_setBGLight(e);}
 	inline void setTabSize(uint8_t t) {tabSize = t;}
@@ -72,7 +72,8 @@ protected:
 	inline void next(void);
 	inline void tab(void);
 
-	uint8_t zoom, orient, tabSize;
+	uint8_t zoom, tabSize;
+	Orientation orient;
 	uint16_t x, y, w, h, fgc, bgc;
 };
 
@@ -185,7 +186,7 @@ inline class tfthw& tfthw::operator^=(uint16_t l)
 	return *this;
 }
 
-inline class tfthw& tfthw::operator/=(uint8_t o)
+inline class tfthw& tfthw::operator/=(Orientation o)
 {
 	setOrient(o);
 	return *this;
@@ -262,6 +263,13 @@ inline class tfthw& tfthw::operator<<(const char *str)
 	return *this;
 }
 
+/**
+	* Writes a single pixel to the screen
+	* 
+	* @param x the x position of the pixel
+	* @param y the y position of the pixel
+	* @param c the color of the pixel
+*/
 inline void tfthw::point(uint16_t x, uint16_t y, uint16_t c)
 {
 	area(x, y, 1, 1);
@@ -344,7 +352,7 @@ inline void tfthw::tab(void)
 	while ((x / (WIDTH * zoom)) % tabSize);
 }
 
-inline void tfthw::setOrient(uint8_t o)
+inline void tfthw::setOrient(Orientation o)
 {
 	_setOrient(o);
 	switch (o) {

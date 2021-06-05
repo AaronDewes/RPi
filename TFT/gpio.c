@@ -1,5 +1,8 @@
 #include "gpio.h"
 
+/**
+ * Resets all GPIO pins
+ */
 void gpio_reset(void) {
 	GPIO_PUD_OFF(PIN(3));
 	GPIO_PUD_OFF(PIN(5));

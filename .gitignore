@@ -1,0 +1,9 @@
+*.o
+*.a
+*.d*
+build
+docs/html
+docs/_build
+docs/_static
+docs/_templates
+docs/conf.py

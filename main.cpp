@@ -6,10 +6,9 @@
 #include <inttypes.h>
 #include <TFT/tft.h>
 #include <TFT/conv.h>
-#include <Graphic/shapes.h>
+#include "Graphic/shapes.h"
 #include <time.h>
 #include <pthread.h>
-
 //#define CAPTURE
 #define PICS	"/mnt/NFS/files/capture/"
 

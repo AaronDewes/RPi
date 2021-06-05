@@ -47,6 +47,7 @@ extern class object *gAxis;
 
 #include <stdlib.h>
 #include <unistd.h>
+#include <stdint.h>
 #include <math.h>
 #include "scrbuff.h"
 
@@ -54,7 +55,7 @@ inline object::object(class object *parent, const class point& p, const class an
 {
 	if (parent == 0)
 		parent = gAxis;
-	if ((int)parent != -1)
+	if ((intptr_t)parent != -1)
 		parent->insert(this);
 	this->parent = parent;
 	tPoint = p;
@@ -72,7 +73,7 @@ inline object::~object(void)
 
 inline class point object::transform(const class point& p)
 {
-	if ((int)parent == -1)
+	if ((intptr_t)parent == -1)
 		return p;
 	return parent->transform(tPoint + convPoint(p, tAngle));
 }
@@ -90,7 +91,7 @@ inline class point object::convPoint(const class point& p, const class angle& a)
 inline void object::show(void)
 {
 	using namespace scr;
-	if ((int)parent == -1) {
+	if ((intptr_t)parent == -1) {
 		while (scrBuffLock)
 			usleep(1000);
 		scrBuffLock = true;

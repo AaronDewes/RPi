@@ -51,8 +51,23 @@ public:
 		BMPFlipLandscape, BMPFlipPortrait};
 
 	static inline void init(void);
+	/**
+	 *Enabled/disable idle mode
+	 * 
+	 * @param e True if idle mode should be enabled, false otherwise
+	 */
 	static inline void idle(bool e) {cmd(0x38 + e);}
+	/**
+	 *Enabled/disable sleep mode
+	 * 
+	 * @param e True if sleep mode should be enabled, false otherwise
+	 */
 	static inline void sleep(bool e) {cmd(0x10 + e);}
+	/**
+	 *Enabled/disable inversion mode
+	 * 
+	 * @param e True if inversion mode should be enabled, false otherwise
+	 */
 	static inline void inversion(bool e) {cmd(0x20 + e);}
 
 protected:
@@ -61,13 +76,19 @@ protected:
 	static inline void send(bool c, uint8_t dat);
 	static inline uint8_t recv(void);
 	static inline void mode(bool _recv);
-	static inline void _setBGLight(bool ctrl);
-	static inline void _setOrient(uint8_t o);
+	static inline void _setBGLight(bool enabled);
+	static inline void _setOrient(Orientation o);
 };
 
-// Defined as inline to excute faster
+// Functions defined as inline to excute faster
 
-inline void ili9341::_setOrient(uint8_t o)
+
+/**
+ * Sets the screen orientation
+ * 
+ * @param o The orientation to be used
+ */
+inline void ili9341::_setOrient(Orientation o)
 {
 	cmd(0x36);			// Memory Access Control
 	switch (o) {
@@ -98,6 +119,12 @@ inline void ili9341::_setOrient(uint8_t o)
 	}
 }
 
+/**
+ * Sends a command to the screen
+ * 
+ * Used by send()
+ * @param dat the command to be sent
+ */
 inline void ili9341::cmd(uint8_t dat)
 {
 	uint32_t value = ((dat & (1 << 0)) ? TFT_MD0 : 0) | \
@@ -112,6 +139,12 @@ inline void ili9341::cmd(uint8_t dat)
 	GPIO_SET_MULTI(TFT_MWR | TFT_MRS);
 }
 
+/**
+ * Sends data to the screen
+ * 
+ * Used by send()
+ * @param dat the data to be sent
+ */
 inline void ili9341::data(uint8_t dat)
 {
 	uint32_t value = ((dat & (1 << 0)) ? TFT_MD0 : 0) | \
@@ -126,6 +159,11 @@ inline void ili9341::data(uint8_t dat)
 	GPIO_SET(TFT_WR);
 }
 
+/**
+ * Internal function to switch between receive and send mode
+ * 
+ * @param _recv Set this to true if you want to receive data, otherwise false
+ */
 inline void ili9341::mode(bool _recv)
 {
 	if (_recv) {
@@ -165,14 +203,26 @@ inline void ili9341::mode(bool _recv)
 	}
 }
 
-inline void ili9341::send(bool c, uint8_t dat)
+/**
+ * Sends data to the screen
+ * 
+ * @param command Set this to true if you want to send a command, not data that should be displayed
+ * @param dat the data to be sent
+ */
+inline void ili9341::send(bool command, uint8_t dat)
 {
-	if (c)
+	if (command)
 		cmd(dat);
 	else
 		data(dat);
 }
 
+
+/**
+ * Receives data from the screen
+ * 
+ * Mostly used internally and should not be called directly in higher-level code
+ */
 inline uint8_t ili9341::recv(void)
 {
 	unsigned char dat;
@@ -190,14 +240,29 @@ inline uint8_t ili9341::recv(void)
 	return dat;
 }
 
-inline void ili9341::_setBGLight(bool e)
+/**
+ * Enables or disables the screen background light
+ * 
+ * @param enabled If this is set to true, the light gets turned on, otherwise it gets turned off
+ */
+inline void ili9341::_setBGLight(bool enabled)
 {
-	if (e)
+	if (enabled)
 		GPIO_SET(TFT_BLC);
 	else
 		GPIO_CLR(TFT_BLC);
 }
 
+/**
+ * Initializes or resets the screen
+ * 
+ * Internally, this
+ * 1. Resets the hardware
+ * 2. Turns the display off
+ * 3. Sets a few useful meta properties used later in rendering
+ * 4. Turns the screen black
+ * 5. Turns the screen on
+ */
 inline void ili9341::init(void)
 {
 	uint8_t c;
