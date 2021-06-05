@@ -13,7 +13,7 @@ void scr::scrCapture(const char *path)
 {
 	ofstream file(path, ios::out | ios::binary);
 	if (!file.is_open()) {
-		cerr << "Error openning file " << path << endl;
+		cerr << "Error opening file " << path << endl;
 		return;
 	}
 	file.write(header, 54);
