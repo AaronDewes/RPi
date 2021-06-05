@@ -1,4 +1,4 @@
-#include <ctype.h>
+#include <cctype>
 #include "ascii.h"
 #include "ili9341.h"
 #include "tft.h"
@@ -42,23 +42,26 @@ void tfthw::line(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, \
 		rectangle(x0, y0, x1 - x0, 1, c);
 		return;
 	}
-	uint16_t dx = abs(x1 - x0), dy = abs(y1 - y0);
+	uint16_t dx = abs(x1 - x0);
+	uint16_t dy = abs(y1 - y0);
 	if (dx < dy) {
 		if (y0 > y1) {
 			SWAP(x0, x1);
 			SWAP(y0, y1);
 		}
-		for (uint16_t y = y0; y <= y1; y++)
+		for (uint16_t y = y0; y <= y1; y++) {
 			point(x0 + x1 * (y - y0) / dy - \
 					x0 * (y - y0) / dy, y, c);
+}
 	} else {
 		if (x0 > x1) {
 			SWAP(x0, x1);
 			SWAP(y0, y1);
 		}
-		for (uint16_t x = x0; x <= x1; x++)
+		for (uint16_t x = x0; x <= x1; x++) {
 			point(x, y0 + y1 * (x - x0) / dx - \
 					y0 * (x - x0) / dx, c);
+}
 	}
 }
 
@@ -67,11 +70,12 @@ void tfthw::rectangle(uint16_t x, uint16_t y, uint16_t w, uint16_t h, \
 {
 	area(x, y, w, h);
 	cmd(0x2C);			// Memory Write
-	while (w--)
+	while ((w--) != 0U) {
 		for (y = 0; y < h; y++) {
 			data(c / 0x0100);
 			data(c % 0x0100);
 		}
+}
 }
 
 void tfthw::putch(char ch)
@@ -79,18 +83,19 @@ void tfthw::putch(char ch)
 	area(x, y, WIDTH * zoom, HEIGHT * zoom);
 	cmd(0x2C);			// Memory Write
 	for (uint8_t i = 0; i < HEIGHT * zoom; i++) {
-		unsigned char c;
+		unsigned char c = 0;
 		c = ascii[ch - ' '][i / zoom];
 		for (uint8_t j = 0; j < WIDTH * zoom; j++) {
-			if (c & 0x80) {
+			if ((c & 0x80) != 0) {
 				data(fgc / 0x0100);
 				data(fgc % 0x0100);
 			} else {
 				data(bgc / 0x0100);
 				data(bgc % 0x0100);
 			}
-			if (j % zoom == zoom - 1)
+			if (j % zoom == zoom - 1) {
 				c <<= 1;
+}
 		}
 	}
 }

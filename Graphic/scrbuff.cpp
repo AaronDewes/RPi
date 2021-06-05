@@ -17,11 +17,12 @@ void scr::scrCapture(const char *path)
 		return;
 	}
 	file.write(header, 54);
-	for (int y = 0; y < SCRH; y++)
-		for (int x = 0; x < SCRW; x++) {
-			file.put((scrBuff[x][y].colour >> 0) & 0xFF);
-			file.put((scrBuff[x][y].colour >> 8) & 0xFF);
-			file.put((scrBuff[x][y].colour >> 16) & 0xFF);
+	for (int y = 0; y < SCRH; y++) {
+		for (auto & x : scrBuff) {
+			file.put((x[y].colour >> 0) & 0xFF);
+			file.put((x[y].colour >> 8) & 0xFF);
+			file.put((x[y].colour >> 16) & 0xFF);
 		}
+}
 	file.close();
 }
